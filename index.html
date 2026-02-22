@@ -55,22 +55,17 @@ margin:20px;
 border-radius:12px;
 }
 
-.admin-btn{
+input, textarea{
+width:90%;
 margin:5px;
-padding:6px 12px;
-border:none;
+padding:8px;
 border-radius:6px;
-cursor:pointer;
+border:none;
 }
 
 #addBtn{
 display:none;
 background:gold;
-}
-
-.discord-btn{
-background:#5865F2;
-color:white;
 }
 </style>
 </head>
@@ -81,114 +76,60 @@ color:white;
 
 <nav>
 <button onclick="loginAdmin()">โหมดผู้สร้าง</button>
-<a href="https://discord.gg/BCJ8QnhNY" target="_blank">
-<button class="discord-btn">เข้าดิส</button>
-</a>
 </nav>
 
 <h2>⚔ รายชื่อตัวละคร</h2>
 
-<button id="addBtn" onclick="showForm()">เพิ่มตัวละคร</button>
-
-<div id="formArea" style="display:none; margin:15px;">
-<input type="text" id="charName" placeholder="ชื่อตัวละคร"><br><br>
-<input type="text" id="charInfo" placeholder="ข้อมูล"><br><br>
-<input type="text" id="charPower" placeholder="พลัง"><br><br>
-<input type="text" id="charOrigin" placeholder="ปฐมบท"><br><br>
-
-<button onclick="document.getElementById('charImage').click()">
-📸 เลือกรูปภาพ
-</button>
-
-<input type="file"
-id="charImage"
-accept="image/*"
-style="display:none"
-onchange="saveCharacter()">
-</div>
+<button id="addBtn" onclick="addCharacter()">เพิ่มตัวละคร</button>
 
 <div id="characterList"></div>
+
 <div id="detailBox" class="detail-box"></div>
 
 <script>
-let isAdmin = false;
-let adminCode = "royalking";
-let characters = JSON.parse(localStorage.getItem("characters")) || [];
+let isAdmin=false;
+let adminCode="royalking";
+let characters=JSON.parse(localStorage.getItem("characters"))||[];
 
-function saveToStorage(){
-localStorage.setItem("characters", JSON.stringify(characters));
+function saveData(){
+localStorage.setItem("characters",JSON.stringify(characters));
 }
 
 function loginAdmin(){
-let code = prompt("ใส่รหัสแอดมิน:");
-if(code === adminCode){
-isAdmin = true;
+let code=prompt("ใส่รหัสแอดมิน:");
+if(code===adminCode){
+isAdmin=true;
 alert("เข้าสู่โหมดผู้สร้าง 👑");
-document.getElementById("addBtn").style.display = "inline-block";
-}else{
-alert("รหัสไม่ถูกต้อง");
+document.getElementById("addBtn").style.display="inline-block";
 }
 }
 
-function showForm(editIndex=null){
+function addCharacter(){
 if(!isAdmin) return;
-document.getElementById("formArea").style.display = "block";
 
-if(editIndex!==null){
-let c = characters[editIndex];
-document.getElementById("charName").value=c.name;
-document.getElementById("charInfo").value=c.info;
-document.getElementById("charPower").value=c.power;
-document.getElementById("charOrigin").value=c.origin;
-document.getElementById("charImage").dataset.edit=editIndex;
-}else{
-document.getElementById("charImage").dataset.edit="";
-}
-}
+let name=prompt("ชื่อตัวละคร:");
+if(!name) return;
 
-function saveCharacter(){
-let name = document.getElementById("charName").value;
-let info = document.getElementById("charInfo").value;
-let power = document.getElementById("charPower").value;
-let origin = document.getElementById("charOrigin").value;
-let file = document.getElementById("charImage").files[0];
-let editIndex = document.getElementById("charImage").dataset.edit;
-
-if(!name || !info || !power || !origin){
-alert("กรอกข้อมูลให้ครบ");
-return;
-}
-
-if(editIndex!==""){
-characters[editIndex].name=name;
-characters[editIndex].info=info;
-characters[editIndex].power=power;
-characters[editIndex].origin=origin;
-saveToStorage();
-renderCharacters();
-return;
-}
-
-if(!file){
-alert("เลือกรูปก่อน");
-return;
-}
-
-let reader = new FileReader();
-reader.onload=function(e){
+let input=document.createElement("input");
+input.type="file";
+input.accept="image/*";
+input.onchange=function(e){
+let file=e.target.files[0];
+let reader=new FileReader();
+reader.onload=function(ev){
 characters.push({
 name:name,
-info:info,
-power:power,
-origin:origin,
-image:e.target.result
+image:ev.target.result,
+info:"",
+power:"",
+origin:""
 });
-saveToStorage();
+saveData();
 renderCharacters();
 };
 reader.readAsDataURL(file);
-
-document.getElementById("formArea").style.display="none";
+};
+input.click();
 }
 
 function renderCharacters(){
@@ -207,33 +148,34 @@ function showDetail(index){
 let c=characters[index];
 let box=document.getElementById("detailBox");
 box.style.display="block";
+
 box.innerHTML=`
 <h2>${c.name}</h2>
 <img src="${c.image}" style="width:100%;border-radius:10px;"><br><br>
+
+${isAdmin?`
+<textarea id="info" placeholder="ข้อมูล">${c.info}</textarea>
+<textarea id="power" placeholder="พลัง">${c.power}</textarea>
+<textarea id="origin" placeholder="ปฐมบท">${c.origin}</textarea>
+<button onclick="saveDetail(${index})">บันทึก</button>
+`:
+`
 <p><b>ข้อมูล:</b> ${c.info}</p>
 <p><b>พลัง:</b> ${c.power}</p>
 <p><b>ปฐมบท:</b> ${c.origin}</p>
-<br>
-${isAdmin?`
-<button class="admin-btn" onclick="editCharacter(${index})">แก้ไข</button>
-<button class="admin-btn" onclick="deleteCharacter(${index})">ลบ</button>
-`:``}
+`}
+
 <br><br>
 <button onclick="closeDetail()">ปิด</button>
 `;
 }
 
-function editCharacter(index){
-showForm(index);
-}
-
-function deleteCharacter(index){
-if(confirm("ลบตัวละครนี้?")){
-characters.splice(index,1);
-saveToStorage();
-renderCharacters();
-document.getElementById("detailBox").style.display="none";
-}
+function saveDetail(index){
+characters[index].info=document.getElementById("info").value;
+characters[index].power=document.getElementById("power").value;
+characters[index].origin=document.getElementById("origin").value;
+saveData();
+alert("บันทึกแล้ว 👑");
 }
 
 function closeDetail(){
@@ -244,4 +186,4 @@ renderCharacters();
 </script>
 
 </body>
-       </html>
+</html>

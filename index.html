@@ -1,202 +1,161 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Rebirth Studio</title>
+import React, { useState } from "react"; import { motion } from "framer-motion"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button"; import { Input } from "@/components/ui/input"; import { Textarea } from "@/components/ui/textarea"; import { Menu, X, Lock, Github } from "lucide-react";
 
-<style>
-body{margin:0;font-family:Arial;background:#f6f6f6;}
-header{
-background:#520044;color:white;
-padding:10px 15px;
-display:flex;justify-content:space-between;align-items:center;
-}
-header input{padding:6px;width:35%;}
-button{padding:6px 10px;border:none;border-radius:4px;cursor:pointer;margin:3px;}
-.add{background:#2ecc71;color:white;}
-.admin{background:#e74c3c;color:white;}
-.container{display:flex;}
-.sidebar{
-width:230px;background:white;border-right:1px solid #ddd;
-padding:15px;min-height:100vh;
-}
-.sidebar h3{margin-top:0;}
-.sidebar div{margin-bottom:6px;cursor:pointer;color:#0645ad;}
-.content{flex:1;padding:20px;background:white;}
-.pageBox{border-bottom:1px solid #ddd;padding:10px 0;}
-.pageBox img{max-width:200px;display:block;margin-top:5px;}
-.commentBox{background:#f1f1f1;padding:8px;margin-top:5px;border-radius:4px;}
-textarea{width:100%;padding:6px;}
-</style>
-</head>
+export default function RebirthStudioFandom() { const [menuOpen, setMenuOpen] = useState(false); const [activePage, setActivePage] = useState("home"); const [role, setRole] = useState(null); // creator | member const [isLoggedIn, setIsLoggedIn] = useState(false); const [creatorPassword, setCreatorPassword] = useState(""); const [memberData, setMemberData] = useState({ username: "", password: "" });
 
-<body>
+const CREATOR_SECRET = "Rebirth999"; // เปลี่ยนรหัสได้
 
-<header>
-<b>Rebirth Studio</b>
-<div>
-<button onclick="login()">ผู้สร้าง</button>
-<button id="addProjectBtn" class="add" style="display:none;" onclick="addProject()">+ โปรเจค</button>
+const handleCreatorLogin = () => { if (creatorPassword === CREATOR_SECRET) { setRole("creator"); setIsLoggedIn(true); setActivePage("admin"); } else { alert("รหัสผู้สร้างไม่ถูกต้อง"); } };
+
+const handleMemberLogin = () => { if (memberData.username && memberData.password) { setRole("member"); setIsLoggedIn(true); setActivePage("home"); } else { alert("กรอกข้อมูลให้ครบ"); } };
+
+// 🔥 GitHub Login (สำหรับใช้งานบนมือถือ GitHub Pages) const handleGithubLogin = () => { // ในระบบจริงต้องใช้ OAuth setRole("member"); setIsLoggedIn(true); setActivePage("home"); alert("เข้าสู่ระบบด้วย GitHub สำเร็จ (Demo Mode)"); };
+
+const logout = () => { setIsLoggedIn(false); setRole(null); setActivePage("home"); };
+
+const pages = { home: ( <Section title="Welcome to Rebirth Studio"> ศูนย์กลางจักรวาลแฟนด้อมของ Rebirth Studio </Section> ), news: ( <Section title="News & Updates">Season ใหม่กำลังพัฒนา</Section> ), characters: ( <Section title="Characters"> <div className="grid md:grid-cols-3 gap-4"> <CharacterCard name="Ken" role="Fallen Seraph" /> <CharacterCard name="Feilong" role="Dragon Hybrid" /> <CharacterCard name="Sun Void" role="Parasite Variant" /> </div> </Section> ), world: ( <Section title="World & Lore"> Celestial Realm | Royal Academy | Void Dimension </Section> ), gallery: ( <Section title="Gallery"> <div className="grid md:grid-cols-4 gap-4"> {[1, 2, 3, 4].map((i) => ( <div
+key={i}
+className="h-32 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl"
+/> ))} </div> </Section> ), projects: ( <Section title="Projects">Royal Academy of the Fallen Line</Section> ), community: ( <Section title="Community">Discord | Instagram | Fandom Wiki</Section> ), contact: ( <Section title="Contact Us"> <div className="space-y-4"> <Input placeholder="Your Name" /> <Input placeholder="Email" /> <Textarea placeholder="Message" /> <Button className="w-full">Send Message</Button> </div> </Section> ), admin: role === "creator" && ( <Section title="Admin Panel (Creator Only)"> ระบบจัดการเว็บไซต์ <div className="mt-4 space-y-2"> <Button className="w-full">Manage Characters</Button> <Button className="w-full">Manage News</Button> <Button className="w-full">Upload Gallery</Button> </div> </Section> ), };
+
+return ( <div className="min-h-screen bg-gradient-to-br from-black via-purple-950 to-black text-white"> <header className="flex items-center justify-between p-4 border-b border-purple-800"> <h1 className="text-xl md:text-2xl font-bold">Rebirth Studio</h1>
+
+{isLoggedIn && (
+      <div className="flex items-center gap-3">
+        <span className="text-sm text-purple-400 capitalize">
+          {role}
+        </span>
+        <Button size="sm" onClick={logout}>
+          Logout
+        </Button>
+      </div>
+    )}
+  </header>
+
+  {/* LOGIN SCREEN */}
+  {!isLoggedIn && (
+    <div className="p-6 grid md:grid-cols-2 gap-6">
+      {/* Creator Login */}
+      <Card className="bg-black/40 border-purple-700 rounded-2xl">
+        <CardContent className="p-6 space-y-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <Lock size={18} /> Creator Login
+          </h2>
+          <Input
+            type="password"
+            placeholder="Enter Creator Password"
+            value={creatorPassword}
+            onChange={(e) => setCreatorPassword(e.target.value)}
+          />
+          <Button className="w-full" onClick={handleCreatorLogin}>
+            Login as Creator
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Member Login */}
+      <Card className="bg-black/40 border-purple-700 rounded-2xl">
+        <CardContent className="p-6 space-y-4">
+          <h2 className="text-lg font-semibold">Member Login</h2>
+          <Input
+            placeholder="Username"
+            value={memberData.username}
+            onChange={(e) =>
+              setMemberData({ ...memberData, username: e.target.value })
+            }
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            value={memberData.password}
+            onChange={(e) =>
+              setMemberData({ ...memberData, password: e.target.value })
+            }
+          />
+          <Button className="w-full" onClick={handleMemberLogin}>
+            Login as Member
+          </Button>
+
+          <div className="text-center text-sm text-purple-400">or</div>
+
+          <Button
+            className="w-full flex items-center gap-2 justify-center bg-white text-black hover:bg-gray-200"
+            onClick={handleGithubLogin}
+          >
+            <Github size={18} /> Login with GitHub
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  )}
+
+  {/* MAIN SITE AFTER LOGIN */}
+  {isLoggedIn && (
+    <>
+      {/* Mobile Menu */}
+      <div className="md:hidden border-b border-purple-800">
+        <button
+          className="w-full p-4 flex justify-between items-center"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <span className="capitalize">{activePage}</span>
+          {menuOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
+
+        {menuOpen && (
+          <div className="flex flex-col px-4 pb-4 gap-2">
+            {Object.keys(pages)
+              .filter((key) => pages[key])
+              .map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setActivePage(key);
+                    setMenuOpen(false);
+                  }}
+                  className="text-left py-2 border-b border-purple-900 capitalize"
+                >
+                  {key}
+                </button>
+              ))}
+          </div>
+        )}
+      </div>
+
+      {/* Desktop Menu */}
+      <nav className="hidden md:flex gap-4 p-4 border-b border-purple-800">
+        {Object.keys(pages)
+          .filter((key) => pages[key])
+          .map((key) => (
+            <button
+              key={key}
+              onClick={() => setActivePage(key)}
+              className="hover:text-purple-400 capitalize"
+            >
+              {key}
+            </button>
+          ))}
+      </nav>
+
+      <main className="p-6">
+        <motion.div
+          key={activePage}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {pages[activePage]}
+        </motion.div>
+      </main>
+    </>
+  )}
+
+  <footer className="p-6 text-center border-t border-purple-800 text-sm">
+    © 2026 Rebirth Studio | Deploy on GitHub Pages Ready
+  </footer>
 </div>
-</header>
 
-<div class="container">
+); }
 
-<div class="sidebar">
-<h3>โปรเจค</h3>
-<div id="projectList"></div>
-</div>
+function Section({ title, children }) { return ( <Card className="bg-black/40 border-purple-700 rounded-2xl shadow-xl"> <CardContent className="p-6 space-y-4"> <h2 className="text-xl font-semibold text-purple-400">{title}</h2> <div>{children}</div> </CardContent> </Card> ); }
 
-<div class="content">
-<h2 id="titleArea">ยินดีต้อนรับ</h2>
-<div id="contentArea"></div>
-</div>
-
-</div>
-
-<script>
-
-let adminPass="rebirthking";
-let isAdmin=false;
-
-let projects=JSON.parse(localStorage.getItem("rebirthData"))||[];
-
-function save(){
-localStorage.setItem("rebirthData",JSON.stringify(projects));
-renderProjects();
-}
-
-function login(){
-let p=prompt("ใส่รหัสผู้สร้าง:");
-if(p===adminPass){
-isAdmin=true;
-alert("เข้าสู่โหมดผู้สร้าง 👑");
-document.getElementById("addProjectBtn").style.display="inline-block";
-renderProjects();
-}else{
-alert("รหัสผิด");
-}
-}
-
-function addProject(){
-let name=prompt("ชื่อโปรเจค:");
-if(!name)return;
-projects.push({name:name,pages:[]});
-save();
-}
-
-function renderProjects(){
-let box=document.getElementById("projectList");
-box.innerHTML="";
-projects.forEach((proj,i)=>{
-let div=document.createElement("div");
-div.innerText=proj.name;
-div.onclick=function(){openProject(i)};
-box.appendChild(div);
-});
-}
-
-function openProject(i){
-let proj=projects[i];
-document.getElementById("titleArea").innerText=proj.name;
-let area=document.getElementById("contentArea");
-area.innerHTML="";
-
-if(isAdmin){
-let btn=document.createElement("button");
-btn.className="add";
-btn.innerText="+ เพิ่มหน้า";
-btn.onclick=function(){addPage(i)};
-area.appendChild(btn);
-}
-
-proj.pages.forEach((page,index)=>{
-let div=document.createElement("div");
-div.className="pageBox";
-div.innerHTML="<h3>"+page.title+"</h3><p>"+page.content+"</p>";
-
-if(page.image){
-div.innerHTML+="<img src='"+page.image+"'>";
-}
-
-if(isAdmin){
-div.innerHTML+=`
-<br>
-<button onclick="editPage(${i},${index})">แก้ไข</button>
-<button class="admin" onclick="deletePage(${i},${index})">ลบ</button>
-`;
-}
-
-div.innerHTML+=`<h4>คอมเมนต์</h4>`;
-
-if(!page.comments) page.comments=[];
-
-page.comments.forEach(c=>{
-div.innerHTML+=`<div class="commentBox">${c}</div>`;
-});
-
-div.innerHTML+=`
-<textarea id="comment_${i}_${index}" placeholder="เขียนคอมเมนต์..."></textarea>
-<button onclick="addComment(${i},${index})">ส่ง</button>
-`;
-
-area.appendChild(div);
-});
-}
-
-function addPage(projectIndex){
-let title=prompt("ชื่อหน้า:");
-let content=prompt("เนื้อหา:");
-if(!title)return;
-
-let input=document.createElement("input");
-input.type="file";
-input.accept="image/*";
-input.onchange=function(e){
-let reader=new FileReader();
-reader.onload=function(ev){
-projects[projectIndex].pages.push({
-title:title,
-content:content,
-image:ev.target.result,
-comments:[]
-});
-save();
-openProject(projectIndex);
-};
-reader.readAsDataURL(e.target.files[0]);
-};
-input.click();
-}
-
-function editPage(pIndex,pageIndex){
-let newContent=prompt("แก้ไขเนื้อหา:",projects[pIndex].pages[pageIndex].content);
-if(newContent!==null){
-projects[pIndex].pages[pageIndex].content=newContent;
-save();
-openProject(pIndex);
-}
-}
-
-function deletePage(pIndex,pageIndex){
-if(confirm("ลบหน้านี้?")){
-projects[pIndex].pages.splice(pageIndex,1);
-save();
-openProject(pIndex);
-}
-}
-
-function addComment(pIndex,pageIndex){
-let text=document.getElementById("comment_"+pIndex+"_"+pageIndex).value;
-if(!text)return;
-projects[pIndex].pages[pageIndex].comments.push(text);
-save();
-openProject(pIndex);
-}
-
-renderProjects();
-
-</script>
-
-</body>
-</html>
+function CharacterCard({ name, role }) { return ( <Card className="bg-gradient-to-br from-purple-900 to-black border-purple-700 rounded-2xl"> <CardContent className="p-4"> <div className="h-32 bg-purple-700 rounded-xl mb-3" /> <h3 className="text-lg font-bold">{name}</h3> <p className="text-sm text-purple-300">{role}</p> <Button className="mt-3 w-full">View Profile</Button> </CardContent> </Card> ); }

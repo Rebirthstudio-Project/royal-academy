@@ -2,146 +2,115 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Rebirth Studio Wiki</title>
+<title>Rebirth Studio</title>
 
 <style>
 body{
 font-family:Arial, sans-serif;
-background:#f5f5f5;
+background:#f6f6f6;
 margin:0;
 }
 
 header{
-background:#202225;
+background:#2a2a2a;
 color:white;
 padding:15px;
-font-size:22px;
+font-size:24px;
 }
 
 .container{
-max-width:900px;
-margin:auto;
+display:flex;
+}
+
+.sidebar{
+width:220px;
+background:#ffffff;
+padding:15px;
+border-right:1px solid #ddd;
+min-height:100vh;
+}
+
+.sidebar h3{
+margin-top:0;
+}
+
+.sidebar a{
+display:block;
+padding:6px;
+color:#0645ad;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:#f0f0f0;
+}
+
+.content{
+flex:1;
 padding:20px;
+background:white;
 }
 
 .card{
-background:white;
-padding:15px;
-margin:15px 0;
-border-radius:6px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+border:1px solid #ddd;
+padding:10px;
+margin-bottom:15px;
 cursor:pointer;
-display:flex;
-align-items:center;
-gap:15px;
 }
 
 .card img{
-width:80px;
-height:80px;
-object-fit:cover;
-border-radius:6px;
-}
-
-.wiki-page{
-display:none;
-background:white;
-padding:20px;
-border-radius:6px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-.wiki-page img{
-width:200px;
-border-radius:8px;
+width:120px;
 float:right;
-margin-left:20px;
+margin-left:10px;
 }
 
-.section-title{
-border-bottom:2px solid #ddd;
+.detail{
+display:none;
+border-top:1px solid #ccc;
 margin-top:20px;
-padding-bottom:5px;
-font-weight:bold;
-}
-
-button{
-padding:6px 12px;
-margin-top:10px;
-cursor:pointer;
+padding-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<header>📖 Rebirth Studio Wiki</header>
+<header>Rebirth Studio Wiki</header>
 
 <div class="container">
 
-<h2>ตัวละคร</h2>
-<div id="characterList"></div>
+<div class="sidebar">
+<h3>เมนู</h3>
+<a href="#">หน้าหลัก</a>
+<a href="#">ตัวละคร</a>
+<a href="#">พลัง</a>
+<a href="#">ปฐมบท</a>
+</div>
 
-<div id="wikiPage" class="wiki-page"></div>
+<div class="content">
 
+<h2>ตัวละครหลัก</h2>
+
+<div class="card" onclick="showDetail()">
+<img src="https://via.placeholder.com/120">
+<h3>ตัวอย่างตัวละคร</h3>
+<p>กดเพื่อดูรายละเอียด</p>
+</div>
+
+<div id="detailBox" class="detail">
+<h2>ตัวอย่างตัวละคร</h2>
+<p><b>ข้อมูล:</b> นักรบแห่งยุคใหม่</p>
+<p><b>พลัง:</b> ควบคุมพลังแสง</p>
+<p><b>ปฐมบท:</b> ผู้ถือกำเนิดจากแก่นพลังดั้งเดิม</p>
+</div>
+
+</div>
 </div>
 
 <script>
-let characters = [];
-
-function addCharacter(name,image,info,power,origin){
-characters.push({name,image,info,power,origin});
-renderList();
+function showDetail(){
+document.getElementById("detailBox").style.display="block";
 }
-
-function renderList(){
-let list=document.getElementById("characterList");
-list.innerHTML="";
-characters.forEach((c,i)=>{
-let card=document.createElement("div");
-card.className="card";
-card.innerHTML=`
-<img src="${c.image}">
-<h3>${c.name}</h3>
-`;
-card.onclick=function(){openWiki(i);};
-list.appendChild(card);
-});
-}
-
-function openWiki(index){
-let c=characters[index];
-let page=document.getElementById("wikiPage");
-page.style.display="block";
-page.innerHTML=`
-<h1>${c.name}</h1>
-<img src="${c.image}">
-<div class="section-title">ข้อมูล</div>
-<p>${c.info}</p>
-
-<div class="section-title">พลัง</div>
-<p>${c.power}</p>
-
-<div class="section-title">ปฐมบท</div>
-<p>${c.origin}</p>
-
-<br><button onclick="closeWiki()">กลับ</button>
-`;
-window.scrollTo(0,0);
-}
-
-function closeWiki(){
-document.getElementById("wikiPage").style.display="none";
-}
-
-/* ตัวอย่างตัวละคร */
-addCharacter(
-"ตัวอย่าง",
-"https://via.placeholder.com/300",
-"นักรบแห่งราชวงศ์",
-"ควบคุมไฟ",
-"ผู้ถือพลังปฐมบทแห่งเปลวเพลิง"
-);
 </script>
 
 </body>

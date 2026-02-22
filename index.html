@@ -1,204 +1,124 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Royal Academy</title>
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:system-ui;
-}
+<title>โรงเรียนราชวงศ์</title>
 
+<style>
 body{
-    background:linear-gradient(180deg,#0f0f1f,#1b1b35);
-    color:white;
+font-family: sans-serif;
+background:#0f172a;
+color:white;
+text-align:center;
+margin:0;
 }
 
 header{
-    text-align:center;
-    padding:60px 20px;
+background:#1e293b;
+padding:15px;
+font-size:22px;
 }
 
-header h1{
-    font-size:26px;
-    margin-bottom:15px;
+nav button{
+margin:5px;
+padding:8px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
 }
 
-header p{
-    opacity:0.8;
-    font-size:14px;
-}
-
-button{
-    margin-top:20px;
-    padding:10px 20px;
-    border:none;
-    border-radius:20px;
-    background:#7b2cff;
-    color:white;
-    font-size:14px;
-}
-
-section{
-    padding:30px 15px;
-}
-
-.title{
-    font-size:20px;
-    margin-bottom:20px;
-    text-align:center;
+.section{
+display:none;
+padding:20px;
 }
 
 .card{
-    background:#23234a;
-    padding:15px;
-    border-radius:15px;
-    margin-bottom:15px;
-}
-
-.card h3{
-    margin-bottom:8px;
-}
-
-footer{
-    text-align:center;
-    padding:20px;
-    opacity:0.6;
-    font-size:12px;
-}
-</style>
-</head>
-<body>
-
-<header>
-<h1>Royal Academy of the Fallen Line</h1>
-<p>โรงเรียนราชวงศ์ของผู้ถือครองพลัง</p>
-<button onclick="alert('ยินดีต้อนรับ เคน 👑')">เข้าสู่สถาบัน</button>
-</header>
-
-<section>
-<div class="title">🏰 บ้านทั้ง 4</div>
-
-<div class="card">
-<h3>House Solaris</h3>
-<p>สายผู้นำ ควบคุมสนามพลัง</p>
-</div>
-
-<div class="card">
-<h3>House Umbra</h3>
-<p>สายเงา ลอบโจมตี จิตวิทยา</p>
-</div>
-
-<div class="card">
-<h3>House Aetherion</h3>
-<p>สายซัพพอร์ต บัฟและฮีล</p>
-</div>
-
-<div class="card">
-<h3>House Dominion</h3>
-<p>สายทำลายล้าง คุมพื้นที่</p>
-</div>
-
-</section>
-
-<section>
-<div class="title">⚡ ระบบพลัง (Tion)</div>
-
-<div class="card">
-<h3>Corruption</h3>
-<p>ครอบงำระยะไกล AOE</p>
-</div>
-
-<div class="card">
-<h3>Domination</h3>
-<p>ควบคุมจิตใจศัตรู</p>
-</div>
-
-<div class="card">
-<h3>Regeneration</h3>
-<p>ฟื้นฟูตัวเอง</p>
-</div>
-
-</section>
-
-<footer>
-© 2026 Royal Academy | For Ken
-</footer>
-<section>
-<div class="title">👑 ตัวละครหลัก</div>
-
-<div class="card" onclick="openModal('ken')">
-<h3>Ken</h3>
-<p>ภูติสวรรค์ตกสวรรค์</p>
-</div>
-
-<div class="card" onclick="openModal('feilong')">
-<h3>Feilong</h3>
-<p>มังกรครึ่งมนุษย์</p>
-</div>
-
-<div class="card" onclick="openModal('sun')">
-<h3>Sun</h3>
-<p>Void Parasite</p>
-</div>
-</section>
-
-<div id="modal" class="modal">
-<div class="modal-content">
-<span class="close" onclick="closeModal()">&times;</span>
-<div id="modal-body"></div>
-</div>
-</div>
-
-<style>
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-justify-content:center;
-align-items:center;
-}
-.modal-content{
-background:#1e1e3f;
-padding:20px;
-border-radius:15px;
+background:#1e293b;
+padding:15px;
+margin:10px auto;
+border-radius:12px;
 width:90%;
 max-width:400px;
 }
-.close{
-float:right;
-font-size:22px;
-cursor:pointer;
+
+#home{ display:block; }
+
+#addBtn{
+display:none;
+background:gold;
+}
+
+.discord-btn{
+background:#5865F2;
+color:white;
 }
 </style>
+</head>
+
+<body>
+
+<header>🏰 โรงเรียนราชวงศ์</header>
+
+<nav>
+<button onclick="showTab('home')">หน้าหลัก</button>
+<button onclick="showTab('prologue')">ปฐมบท</button>
+<button onclick="loginAdmin()">โหมดผู้สร้าง</button>
+<a href="https://discord.gg/BCJ8QnhNY" target="_blank">
+<button class="discord-btn">เข้าดิส</button>
+</a>
+</nav>
+
+<div id="home" class="section">
+<h2>รายชื่อตัวละคร</h2>
+
+<button id="addBtn" onclick="addCharacter()">เพิ่มตัวละคร</button>
+
+<div id="characterList"></div>
+</div>
+
+<div id="prologue" class="section">
+<h2>ปฐมบท</h2>
+<p>
+ณ ดินแดนแห่งราชวงศ์…  
+โรงเรียนที่รวมเหล่าผู้มีพลังพิเศษ  
+แต่ละบ้านมีพลังแตกต่างกัน  
+และเรื่องราวกำลังจะเริ่มต้น…
+</p>
+</div>
 
 <script>
-function openModal(character){
-let content = "";
+let isAdmin = false;
+let adminCode = "royalking";
 
-if(character === "ken"){
-content = "<h2>Ken</h2><p>บ้าน: Dominion<br>พลัง: Corruption + Domination<br>ระดับ: SSS</p>";
-}
-else if(character === "feilong"){
-content = "<h2>Feilong</h2><p>บ้าน: Solaris<br>พลัง: หยินหยาง<br>ระดับ: SS</p>";
-}
-else if(character === "sun"){
-content = "<h2>Sun</h2><p>บ้าน: Umbra<br>พลัง: Void Manipulation<br>ระดับ: ???</p>";
+function showTab(tab){
+document.getElementById("home").style.display = "none";
+document.getElementById("prologue").style.display = "none";
+document.getElementById(tab).style.display = "block";
 }
 
-document.getElementById("modal-body").innerHTML = content;
-document.getElementById("modal").style.display = "flex";
+function loginAdmin(){
+let code = prompt("ใส่รหัสแอดมิน:");
+if(code === adminCode){
+isAdmin = true;
+alert("เข้าสู่โหมดผู้สร้าง 👑");
+document.getElementById("addBtn").style.display = "inline-block";
+}else{
+alert("รหัสไม่ถูกต้อง");
+}
 }
 
-function closeModal(){
-document.getElementById("modal").style.display = "none";
+function addCharacter(){
+if(!isAdmin) return;
+
+let name = prompt("ชื่อตัวละคร:");
+let power = prompt("พลัง:");
+
+if(name && power){
+let card = document.createElement("div");
+card.className = "card";
+card.innerHTML = "<h3>"+name+"</h3><p>พลัง: "+power+"</p>";
+document.getElementById("characterList").appendChild(card);
+}
 }
 </script>
 

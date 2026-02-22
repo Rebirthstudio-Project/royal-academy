@@ -2,30 +2,44 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Rebirth Studio Wiki</title>
+<title>Rebirth Studio - Fandom Style</title>
 
 <style>
 body{
-font-family:Arial, sans-serif;
-background:#f6f6f6;
 margin:0;
+font-family:Arial, sans-serif;
+background:#f8f9fa;
 }
 
 header{
-background:#2a2a2a;
+background:#202225;
 color:white;
 padding:15px;
-font-size:22px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 }
 
+header h1{
+margin:0;
+font-size:22px;
+}
+
 button{
 padding:6px 10px;
 border:none;
-cursor:pointer;
 border-radius:4px;
+cursor:pointer;
+}
+
+.admin{
+background:#e74c3c;
+color:white;
+}
+
+.add{
+background:#2ecc71;
+color:white;
 }
 
 .container{
@@ -33,11 +47,25 @@ display:flex;
 }
 
 .sidebar{
-width:220px;
-background:#fff;
-padding:15px;
+width:250px;
+background:white;
 border-right:1px solid #ddd;
+padding:15px;
 min-height:100vh;
+}
+
+.sidebar h3{
+margin-top:0;
+}
+
+.sidebar div{
+margin-bottom:6px;
+}
+
+.sidebar a{
+text-decoration:none;
+color:#0645ad;
+cursor:pointer;
 }
 
 .content{
@@ -46,129 +74,154 @@ padding:20px;
 background:white;
 }
 
-.card{
+.project{
 border:1px solid #ddd;
 padding:10px;
-margin-bottom:15px;
+margin-bottom:10px;
 cursor:pointer;
 }
 
-.card img{
-width:120px;
-float:right;
-margin-left:10px;
+.project:hover{
+background:#f1f1f1;
 }
 
-.detail{
-display:none;
-border-top:1px solid #ccc;
-margin-top:20px;
-padding-top:20px;
-}
-
-.admin-btn{
-margin:5px 0;
-background:#e74c3c;
-color:white;
-}
 </style>
 </head>
 
 <body>
 
 <header>
-Rebirth Studio Wiki
+<h1>Rebirth Studio Wiki</h1>
 <div>
-<button onclick="loginAdmin()">โหมดผู้สร้าง</button>
-<button id="addBtn" style="display:none;" onclick="addPage()">สร้างหน้า</button>
+<button onclick="login()">โหมดผู้สร้าง</button>
+<button id="addProjectBtn" class="add" style="display:none;" onclick="addProject()">สร้างโปรเจค</button>
 </div>
 </header>
 
 <div class="container">
 
 <div class="sidebar">
-<h3>เมนู</h3>
-<div id="menuList"></div>
+<h3>โปรเจค</h3>
+<div id="projectList"></div>
 </div>
 
 <div class="content">
-<h2>หน้าเนื้อหา</h2>
-<div id="detailBox"></div>
+<h2>ยินดีต้อนรับสู่ Rebirth Studio</h2>
+<p>เลือกโปรเจคทางซ้ายเพื่อดูรายละเอียด</p>
+<div id="contentArea"></div>
 </div>
 
 </div>
 
 <script>
-let adminCode="rebirthking";
-let isAdmin=false;
-let pages=JSON.parse(localStorage.getItem("pages"))||[];
 
-function saveData(){
-localStorage.setItem("pages",JSON.stringify(pages));
-renderMenu();
+let adminPass="rebirthking";
+let isAdmin=false;
+
+let projects=JSON.parse(localStorage.getItem("projects"))||[];
+
+function save(){
+localStorage.setItem("projects",JSON.stringify(projects));
+renderProjects();
 }
 
-function loginAdmin(){
-let code=prompt("ใส่รหัสผู้สร้าง:");
-if(code===adminCode){
+function login(){
+let p=prompt("ใส่รหัสผู้สร้าง:");
+if(p===adminPass){
 isAdmin=true;
 alert("เข้าสู่โหมดผู้สร้าง 👑");
-document.getElementById("addBtn").style.display="inline-block";
-renderMenu();
+document.getElementById("addProjectBtn").style.display="inline-block";
+renderProjects();
 }else{
 alert("รหัสผิด");
 }
 }
 
-function addPage(){
-let title=prompt("ชื่อหน้า:");
-if(!title) return;
-let content=prompt("เนื้อหา:");
-pages.push({title:title,content:content});
-saveData();
+function addProject(){
+let name=prompt("ชื่อโปรเจค:");
+if(!name) return;
+
+projects.push({
+name:name,
+pages:[]
+});
+
+save();
 }
 
-function renderMenu(){
-let menu=document.getElementById("menuList");
-menu.innerHTML="";
-pages.forEach((p,index)=>{
-let link=document.createElement("div");
-link.innerHTML=`<a href="#" onclick="showPage(${index})">${p.title}</a>`;
-menu.appendChild(link);
+function renderProjects(){
+let list=document.getElementById("projectList");
+list.innerHTML="";
+
+projects.forEach((proj,i)=>{
+let div=document.createElement("div");
+div.innerHTML=`<a onclick="openProject(${i})">${proj.name}</a>`;
+list.appendChild(div);
 });
 }
 
-function showPage(index){
-let box=document.getElementById("detailBox");
-let p=pages[index];
-box.innerHTML=`
-<h2>${p.title}</h2>
-<p>${p.content}</p>
+function openProject(index){
+let area=document.getElementById("contentArea");
+let proj=projects[index];
+
+area.innerHTML=`<h2>${proj.name}</h2>
+<div id="pages"></div>
+${isAdmin?'<button class="add" onclick="addPage('+index+')">เพิ่มหน้า</button>':''}
+`;
+
+renderPages(index);
+}
+
+function renderPages(projectIndex){
+let box=document.getElementById("pages");
+box.innerHTML="";
+projects[projectIndex].pages.forEach((page,i)=>{
+let div=document.createElement("div");
+div.className="project";
+div.innerHTML=`
+<b>${page.title}</b>
 ${isAdmin?`
-<button onclick="editPage(${index})">แก้ไข</button>
-<button class="admin-btn" onclick="deletePage(${index})">ลบ</button>
+<br>
+<button onclick="editPage(${projectIndex},${i})">แก้ไข</button>
+<button class="admin" onclick="deletePage(${projectIndex},${i})">ลบ</button>
 `:``}
 `;
+box.appendChild(div);
+});
 }
 
-function editPage(index){
-let newContent=prompt("แก้ไขเนื้อหา:",pages[index].content);
+function addPage(projectIndex){
+let title=prompt("ชื่อหน้า:");
+let content=prompt("เนื้อหา:");
+if(!title) return;
+
+projects[projectIndex].pages.push({
+title:title,
+content:content
+});
+save();
+openProject(projectIndex);
+}
+
+function editPage(pIndex,pageIndex){
+let newContent=prompt("แก้ไขเนื้อหา:",projects[pIndex].pages[pageIndex].content);
 if(newContent!==null){
-pages[index].content=newContent;
-saveData();
-showPage(index);
+projects[pIndex].pages[pageIndex].content=newContent;
+save();
+openProject(pIndex);
 }
 }
 
-function deletePage(index){
+function deletePage(pIndex,pageIndex){
 if(confirm("ลบหน้านี้?")){
-pages.splice(index,1);
-saveData();
-document.getElementById("detailBox").innerHTML="";
+projects[pIndex].pages.splice(pageIndex,1);
+save();
+openProject(pIndex);
 }
 }
 
-renderMenu();
+renderProjects();
+
 </script>
 
 </body>

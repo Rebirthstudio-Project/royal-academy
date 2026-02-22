@@ -102,84 +102,9 @@ footer{
 <p>สายทำลายล้าง คุมพื้นที่</p>
 </div>
 
-<section>
-<div class="title">👑 ตัวละครหลัก</div>
-
-<div class="card" onclick="openModal('ken')">
-<h3>Ken</h3>
-<p>ภูติสวรรค์ที่ตกสวรรค์</p>
-</div>
-
-<div class="card" onclick="openModal('feilong')">
-<h3>Feilong</h3>
-<p>มังกรลูกครึ่งมนุษย์</p>
-</div>
-
-<div class="card" onclick="openModal('sun')">
-<h3>Sun (Void Parasite)</h3>
-<p>ผู้ใช้พลัง Void</p>
-</div>
 </section>
 
-<!-- กล่องรายละเอียด -->
-<div id="modal" class="modal">
-<div class="modal-content">
-<span class="close" onclick="closeModal()">&times;</span>
-<div id="modal-body"></div>
-</div>
-</div>
-
-<style>
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-justify-content:center;
-align-items:center;
-padding:20px;
-}
-.modal-content{
-background:#1e1e3f;
-padding:20px;
-border-radius:15px;
-width:100%;
-max-width:400px;
-}
-.close{
-float:right;
-font-size:22px;
-cursor:pointer;
-}
-</style>
-
-<script>
-function openModal(character){
-let content = "";
-
-if(character === "ken"){
-content = "<h2>Ken</h2><p>เผ่าพันธุ์: ภูติสวรรค์ตกสวรรค์<br>บ้าน: Dominion<br>พลัง: Corruption + Domination<br>ระดับพลัง: SSS</p>";
-}
-
-if(character === "feilong"){
-content = "<h2>Feilong</h2><p>เผ่าพันธุ์: มังกรครึ่งมนุษย์<br>บ้าน: Solaris<br>พลัง: หยินหยาง<br>ระดับพลัง: SS</p>";
-}
-
-if(character === "sun"){
-content = "<h2>Selafia</h2><p>เผ่าพันธุ์: ปรสิต Void กลายพันธุ์<br>บ้าน: Umbra<br>พลัง: Void Manipulation<br>ระดับพลัง: ???</p>";
-}
-
-document.getElementById("modal-body").innerHTML = content;
-document.getElementById("modal").style.display = "flex";
-}
-
-function closeModal(){
-document.getElementById("modal").style.display = "none";
-}
-</script>
+<section>
 <div class="title">⚡ ระบบพลัง (Tion)</div>
 
 <div class="card">
@@ -202,6 +127,80 @@ document.getElementById("modal").style.display = "none";
 <footer>
 © 2026 Royal Academy | For Ken
 </footer>
+<section>
+<div class="title">👑 ตัวละครหลัก</div>
+
+<div class="card" onclick="openModal('ken')">
+<h3>Ken</h3>
+<p>ภูติสวรรค์ตกสวรรค์</p>
+</div>
+
+<div class="card" onclick="openModal('feilong')">
+<h3>Feilong</h3>
+<p>มังกรครึ่งมนุษย์</p>
+</div>
+
+<div class="card" onclick="openModal('sun')">
+<h3>Sun</h3>
+<p>Void Parasite</p>
+</div>
+</section>
+
+<div id="modal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal()">&times;</span>
+<div id="modal-body"></div>
+</div>
+</div>
+
+<style>
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+justify-content:center;
+align-items:center;
+}
+.modal-content{
+background:#1e1e3f;
+padding:20px;
+border-radius:15px;
+width:90%;
+max-width:400px;
+}
+.close{
+float:right;
+font-size:22px;
+cursor:pointer;
+}
+</style>
+
+<script>
+function openModal(character){
+let content = "";
+
+if(character === "ken"){
+content = "<h2>Ken</h2><p>บ้าน: Dominion<br>พลัง: Corruption + Domination<br>ระดับ: SSS</p>";
+}
+else if(character === "feilong"){
+content = "<h2>Feilong</h2><p>บ้าน: Solaris<br>พลัง: หยินหยาง<br>ระดับ: SS</p>";
+}
+else if(character === "sun"){
+content = "<h2>Sun</h2><p>บ้าน: Umbra<br>พลัง: Void Manipulation<br>ระดับ: ???</p>";
+}
+
+document.getElementById("modal-body").innerHTML = content;
+document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal(){
+document.getElementById("modal").style.display = "none";
+}
+</script>
 
 </body>
 </html>

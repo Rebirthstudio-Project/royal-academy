@@ -100,8 +100,16 @@ border-radius:12px;
 <div id="formArea" style="display:none; margin:15px;">
 <input type="text" id="charName" placeholder="ชื่อตัวละคร"><br><br>
 <input type="text" id="charPower" placeholder="พลัง"><br><br>
-<input type="file" id="charImage" accept="image/*"><br><br>
-<button onclick="saveCharacter()">บันทึก</button>
+
+<button onclick="document.getElementById('charImage').click()">
+📸 เลือกรูปภาพ
+</button>
+
+<input type="file"
+       id="charImage"
+       accept="image/*"
+       style="display:none"
+       onchange="saveCharacter()">
 </div>
 
 <div id="characterList"></div>
@@ -134,7 +142,7 @@ let power = document.getElementById("charPower").value;
 let file = document.getElementById("charImage").files[0];
 
 if(!name || !power || !file){
-alert("กรอกข้อมูลให้ครบ");
+alert("กรอกชื่อ พลัง และเลือกรูปก่อน");
 return;
 }
 
@@ -153,6 +161,8 @@ document.getElementById("characterList").appendChild(card);
 reader.readAsDataURL(file);
 
 document.getElementById("formArea").style.display = "none";
+document.getElementById("charName").value = "";
+document.getElementById("charPower").value = "";
 }
 </script>
 

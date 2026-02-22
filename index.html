@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Rebirth Studio</title>
+<title>Rebirth Studio Wiki</title>
 
 <style>
 body{
@@ -15,7 +15,17 @@ header{
 background:#2a2a2a;
 color:white;
 padding:15px;
-font-size:24px;
+font-size:22px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+button{
+padding:6px 10px;
+border:none;
+cursor:pointer;
+border-radius:4px;
 }
 
 .container{
@@ -24,25 +34,10 @@ display:flex;
 
 .sidebar{
 width:220px;
-background:#ffffff;
+background:#fff;
 padding:15px;
 border-right:1px solid #ddd;
 min-height:100vh;
-}
-
-.sidebar h3{
-margin-top:0;
-}
-
-.sidebar a{
-display:block;
-padding:6px;
-color:#0645ad;
-text-decoration:none;
-}
-
-.sidebar a:hover{
-background:#f0f0f0;
 }
 
 .content{
@@ -70,47 +65,110 @@ border-top:1px solid #ccc;
 margin-top:20px;
 padding-top:20px;
 }
+
+.admin-btn{
+margin:5px 0;
+background:#e74c3c;
+color:white;
+}
 </style>
 </head>
 
 <body>
 
-<header>Rebirth Studio Wiki</header>
+<header>
+Rebirth Studio Wiki
+<div>
+<button onclick="loginAdmin()">โหมดผู้สร้าง</button>
+<button id="addBtn" style="display:none;" onclick="addPage()">สร้างหน้า</button>
+</div>
+</header>
 
 <div class="container">
 
 <div class="sidebar">
 <h3>เมนู</h3>
-<a href="#">หน้าหลัก</a>
-<a href="#">ตัวละคร</a>
-<a href="#">พลัง</a>
-<a href="#">ปฐมบท</a>
+<div id="menuList"></div>
 </div>
 
 <div class="content">
-
-<h2>ตัวละครหลัก</h2>
-
-<div class="card" onclick="showDetail()">
-<img src="https://via.placeholder.com/120">
-<h3>ตัวอย่างตัวละคร</h3>
-<p>กดเพื่อดูรายละเอียด</p>
+<h2>หน้าเนื้อหา</h2>
+<div id="detailBox"></div>
 </div>
 
-<div id="detailBox" class="detail">
-<h2>ตัวอย่างตัวละคร</h2>
-<p><b>ข้อมูล:</b> นักรบแห่งยุคใหม่</p>
-<p><b>พลัง:</b> ควบคุมพลังแสง</p>
-<p><b>ปฐมบท:</b> ผู้ถือกำเนิดจากแก่นพลังดั้งเดิม</p>
-</div>
-
-</div>
 </div>
 
 <script>
-function showDetail(){
-document.getElementById("detailBox").style.display="block";
+let adminCode="rebirthking";
+let isAdmin=false;
+let pages=JSON.parse(localStorage.getItem("pages"))||[];
+
+function saveData(){
+localStorage.setItem("pages",JSON.stringify(pages));
+renderMenu();
 }
+
+function loginAdmin(){
+let code=prompt("ใส่รหัสผู้สร้าง:");
+if(code===adminCode){
+isAdmin=true;
+alert("เข้าสู่โหมดผู้สร้าง 👑");
+document.getElementById("addBtn").style.display="inline-block";
+renderMenu();
+}else{
+alert("รหัสผิด");
+}
+}
+
+function addPage(){
+let title=prompt("ชื่อหน้า:");
+if(!title) return;
+let content=prompt("เนื้อหา:");
+pages.push({title:title,content:content});
+saveData();
+}
+
+function renderMenu(){
+let menu=document.getElementById("menuList");
+menu.innerHTML="";
+pages.forEach((p,index)=>{
+let link=document.createElement("div");
+link.innerHTML=`<a href="#" onclick="showPage(${index})">${p.title}</a>`;
+menu.appendChild(link);
+});
+}
+
+function showPage(index){
+let box=document.getElementById("detailBox");
+let p=pages[index];
+box.innerHTML=`
+<h2>${p.title}</h2>
+<p>${p.content}</p>
+${isAdmin?`
+<button onclick="editPage(${index})">แก้ไข</button>
+<button class="admin-btn" onclick="deletePage(${index})">ลบ</button>
+`:``}
+`;
+}
+
+function editPage(index){
+let newContent=prompt("แก้ไขเนื้อหา:",pages[index].content);
+if(newContent!==null){
+pages[index].content=newContent;
+saveData();
+showPage(index);
+}
+}
+
+function deletePage(index){
+if(confirm("ลบหน้านี้?")){
+pages.splice(index,1);
+saveData();
+document.getElementById("detailBox").innerHTML="";
+}
+}
+
+renderMenu();
 </script>
 
 </body>

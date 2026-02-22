@@ -2,187 +2,146 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>โรงเรียนราชวงศ์</title>
+<title>Rebirth Studio Wiki</title>
 
 <style>
 body{
-font-family:sans-serif;
-background:#0f172a;
-color:white;
-text-align:center;
+font-family:Arial, sans-serif;
+background:#f5f5f5;
 margin:0;
 }
 
 header{
-background:#1e293b;
+background:#202225;
+color:white;
 padding:15px;
 font-size:22px;
 }
 
-nav{
-background:#111827;
-padding:10px;
-}
-
-nav button{
-margin:5px;
-padding:8px 15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
 }
 
 .card{
-background:#1e293b;
-padding:10px;
-margin:15px auto;
-border-radius:12px;
-width:90%;
-max-width:400px;
+background:white;
+padding:15px;
+margin:15px 0;
+border-radius:6px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 cursor:pointer;
+display:flex;
+align-items:center;
+gap:15px;
 }
 
 .card img{
-width:100%;
-border-radius:10px;
-}
-
-.detail-box{
-display:none;
-background:#1e293b;
-padding:20px;
-margin:20px;
-border-radius:12px;
-}
-
-input, textarea{
-width:90%;
-margin:5px;
-padding:8px;
+width:80px;
+height:80px;
+object-fit:cover;
 border-radius:6px;
-border:none;
 }
 
-#addBtn{
+.wiki-page{
 display:none;
-background:gold;
+background:white;
+padding:20px;
+border-radius:6px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.wiki-page img{
+width:200px;
+border-radius:8px;
+float:right;
+margin-left:20px;
+}
+
+.section-title{
+border-bottom:2px solid #ddd;
+margin-top:20px;
+padding-bottom:5px;
+font-weight:bold;
+}
+
+button{
+padding:6px 12px;
+margin-top:10px;
+cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<header>🏰 โรงเรียนราชวงศ์</header>
+<header>📖 Rebirth Studio Wiki</header>
 
-<nav>
-<button onclick="loginAdmin()">โหมดผู้สร้าง</button>
-</nav>
+<div class="container">
 
-<h2>⚔ รายชื่อตัวละคร</h2>
-
-<button id="addBtn" onclick="addCharacter()">เพิ่มตัวละคร</button>
-
+<h2>ตัวละคร</h2>
 <div id="characterList"></div>
 
-<div id="detailBox" class="detail-box"></div>
+<div id="wikiPage" class="wiki-page"></div>
+
+</div>
 
 <script>
-let isAdmin=false;
-let adminCode="royalking";
-let characters=JSON.parse(localStorage.getItem("characters"))||[];
+let characters = [];
 
-function saveData(){
-localStorage.setItem("characters",JSON.stringify(characters));
+function addCharacter(name,image,info,power,origin){
+characters.push({name,image,info,power,origin});
+renderList();
 }
 
-function loginAdmin(){
-let code=prompt("ใส่รหัสแอดมิน:");
-if(code===adminCode){
-isAdmin=true;
-alert("เข้าสู่โหมดผู้สร้าง 👑");
-document.getElementById("addBtn").style.display="inline-block";
-}
-}
-
-function addCharacter(){
-if(!isAdmin) return;
-
-let name=prompt("ชื่อตัวละคร:");
-if(!name) return;
-
-let input=document.createElement("input");
-input.type="file";
-input.accept="image/*";
-input.onchange=function(e){
-let file=e.target.files[0];
-let reader=new FileReader();
-reader.onload=function(ev){
-characters.push({
-name:name,
-image:ev.target.result,
-info:"",
-power:"",
-origin:""
-});
-saveData();
-renderCharacters();
-};
-reader.readAsDataURL(file);
-};
-input.click();
-}
-
-function renderCharacters(){
+function renderList(){
 let list=document.getElementById("characterList");
 list.innerHTML="";
-characters.forEach((c,index)=>{
+characters.forEach((c,i)=>{
 let card=document.createElement("div");
 card.className="card";
-card.innerHTML=`<img src="${c.image}"><h3>${c.name}</h3>`;
-card.onclick=function(){showDetail(index);};
+card.innerHTML=`
+<img src="${c.image}">
+<h3>${c.name}</h3>
+`;
+card.onclick=function(){openWiki(i);};
 list.appendChild(card);
 });
 }
 
-function showDetail(index){
+function openWiki(index){
 let c=characters[index];
-let box=document.getElementById("detailBox");
-box.style.display="block";
+let page=document.getElementById("wikiPage");
+page.style.display="block";
+page.innerHTML=`
+<h1>${c.name}</h1>
+<img src="${c.image}">
+<div class="section-title">ข้อมูล</div>
+<p>${c.info}</p>
 
-box.innerHTML=`
-<h2>${c.name}</h2>
-<img src="${c.image}" style="width:100%;border-radius:10px;"><br><br>
+<div class="section-title">พลัง</div>
+<p>${c.power}</p>
 
-${isAdmin?`
-<textarea id="info" placeholder="ข้อมูล">${c.info}</textarea>
-<textarea id="power" placeholder="พลัง">${c.power}</textarea>
-<textarea id="origin" placeholder="ปฐมบท">${c.origin}</textarea>
-<button onclick="saveDetail(${index})">บันทึก</button>
-`:
-`
-<p><b>ข้อมูล:</b> ${c.info}</p>
-<p><b>พลัง:</b> ${c.power}</p>
-<p><b>ปฐมบท:</b> ${c.origin}</p>
-`}
+<div class="section-title">ปฐมบท</div>
+<p>${c.origin}</p>
 
-<br><br>
-<button onclick="closeDetail()">ปิด</button>
+<br><button onclick="closeWiki()">กลับ</button>
 `;
+window.scrollTo(0,0);
 }
 
-function saveDetail(index){
-characters[index].info=document.getElementById("info").value;
-characters[index].power=document.getElementById("power").value;
-characters[index].origin=document.getElementById("origin").value;
-saveData();
-alert("บันทึกแล้ว 👑");
+function closeWiki(){
+document.getElementById("wikiPage").style.display="none";
 }
 
-function closeDetail(){
-document.getElementById("detailBox").style.display="none";
-}
-
-renderCharacters();
+/* ตัวอย่างตัวละคร */
+addCharacter(
+"ตัวอย่าง",
+"https://via.placeholder.com/300",
+"นักรบแห่งราชวงศ์",
+"ควบคุมไฟ",
+"ผู้ถือพลังปฐมบทแห่งเปลวเพลิง"
+);
 </script>
 
 </body>

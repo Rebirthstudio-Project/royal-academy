@@ -2,116 +2,106 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Rebirth Studio | Fandom</title>
-
+<title>Rebirth Studio</title>
 <style>
+
 body{
 margin:0;
-font-family:Arial, Helvetica, sans-serif;
+font-family:Arial, sans-serif;
 background:#f5f5f5;
 }
 
-/* TOP BAR */
-.topbar{
-background:#520044;
+/* ===== TOP NAV ===== */
+.topnav{
+background:#5a004f;
 color:white;
 display:flex;
 align-items:center;
-padding:10px 15px;
+padding:10px;
 }
 
 .logo{
-font-weight:bold;
 font-size:20px;
 margin-right:20px;
 }
 
-.search{
+.menu-links{
+display:flex;
+gap:20px;
 flex:1;
 }
 
-.search input{
-width:100%;
-padding:6px;
-border-radius:4px;
-border:none;
+.menu-links span{
+cursor:pointer;
+font-size:14px;
 }
 
-.topbar button{
-margin-left:10px;
-padding:6px 10px;
-border:none;
-border-radius:4px;
+.icons{
+display:flex;
+gap:15px;
+font-size:18px;
 cursor:pointer;
 }
 
-/* LAYOUT */
+/* ===== LAYOUT ===== */
 .container{
 display:flex;
 }
 
+/* ===== SIDEBAR ===== */
 .sidebar{
-width:220px;
-background:white;
-border-right:1px solid #ddd;
+width:80px;
+background:#eeeeee;
+text-align:center;
+padding-top:20px;
 min-height:100vh;
-padding:15px;
 }
 
-.sidebar h3{
-margin-top:0;
-font-size:14px;
-color:#777;
-}
-
-.sidebar a{
-display:block;
-padding:6px 0;
-color:#0645ad;
-text-decoration:none;
+.sidebar div{
+margin:20px 0;
+font-size:13px;
 cursor:pointer;
 }
 
-.sidebar a:hover{
-text-decoration:underline;
+.sidebar img{
+width:40px;
+height:40px;
+border-radius:50%;
 }
 
+/* ===== CONTENT ===== */
 .content{
 flex:1;
 padding:20px;
 background:white;
 }
 
-/* RESULTS */
-.result{
+.card{
 border-bottom:1px solid #ddd;
 padding:10px 0;
 }
 
-.result b{
+.card b{
 color:#990099;
 cursor:pointer;
-font-size:16px;
-}
-
-.result b:hover{
-text-decoration:underline;
 }
 
 .admin{
-background:#e74c3c;
+background:red;
 color:white;
+border:none;
+padding:4px 6px;
 margin-left:5px;
+cursor:pointer;
 }
 
 .add{
-background:#2ecc71;
+background:green;
 color:white;
-}
-
-/* PAGE VIEW */
-.page-view{
-margin-top:20px;
+border:none;
+padding:6px 10px;
+cursor:pointer;
+margin-top:10px;
 }
 
 </style>
@@ -119,28 +109,45 @@ margin-top:20px;
 
 <body>
 
-<div class="topbar">
-<div class="logo">Rebirth Studio</div>
-<div class="search">
-<input type="text" id="searchBox" placeholder="Search Rebirth Studio" onkeyup="search()">
+<!-- TOP BAR -->
+<div class="topnav">
+<div class="logo">🔥</div>
+
+<div class="menu-links">
+<span>EXPLORE ▾</span>
+<span>GET STARTED ▾</span>
+<span>I NEED HELP ▾</span>
+<span>I WANT ▾</span>
+<span>AROUND ▾</span>
 </div>
-<button onclick="login()">โหมดผู้สร้าง</button>
-<button id="addBtn" class="add" style="display:none;" onclick="addPage()">Create Page</button>
+
+<div class="icons">
+<span onclick="login()">👤</span>
+<span onclick="toggleDark()">🌙</span>
+<span>🔍</span>
+</div>
 </div>
 
 <div class="container">
 
+<!-- SIDEBAR -->
 <div class="sidebar">
-<h3>EXPLORE</h3>
-<a onclick="showAll()">All Pages</a>
+<div>☰<br>Menu</div>
+<div>🧭<br>Explore</div>
+<div style="font-weight:bold;">RECENT</div>
+<img src="https://via.placeholder.com/40">
+<img src="https://via.placeholder.com/40">
+<img src="https://via.placeholder.com/40">
+<div>•••<br>More</div>
 </div>
 
+<!-- CONTENT -->
 <div class="content">
 
-<h2>Search Results</h2>
-<div id="results"></div>
+<h2>Rebirth Studio</h2>
+<button id="addBtn" class="add" style="display:none;" onclick="addPage()">Create Page</button>
 
-<div id="pageView" class="page-view"></div>
+<div id="pages"></div>
 
 </div>
 
@@ -150,93 +157,73 @@ margin-top:20px;
 
 let adminPass="rebirthking";
 let isAdmin=false;
-let pages=JSON.parse(localStorage.getItem("rebirth_pages"))||[];
+let pages=JSON.parse(localStorage.getItem("fandom_pages"))||[];
 
 function save(){
-localStorage.setItem("rebirth_pages",JSON.stringify(pages));
+localStorage.setItem("fandom_pages",JSON.stringify(pages));
 render();
 }
 
 function login(){
-let p=prompt("Enter admin password:");
+let p=prompt("Enter Admin Password:");
 if(p===adminPass){
 isAdmin=true;
-alert("Admin Mode Enabled 👑");
+alert("Admin Mode 👑");
 document.getElementById("addBtn").style.display="inline-block";
 render();
 }else{
-alert("Wrong password");
+alert("Wrong Password");
 }
 }
 
 function addPage(){
 let title=prompt("Page Title:");
+let content=prompt("Content:");
 if(!title) return;
-let content=prompt("Page Content:");
 pages.push({title:title,content:content});
 save();
 }
 
 function render(){
-let box=document.getElementById("results");
+let box=document.getElementById("pages");
 box.innerHTML="";
 pages.forEach((p,i)=>{
 let div=document.createElement("div");
-div.className="result";
+div.className="card";
 div.innerHTML=`
-<b onclick="viewPage(${i})">${p.title}</b>
+<b onclick="view(${i})">${p.title}</b>
 ${isAdmin?`
-<button onclick="editPage(${i})">Edit</button>
-<button class="admin" onclick="deletePage(${i})">Delete</button>
+<button onclick="edit(${i})">Edit</button>
+<button class="admin" onclick="del(${i})">Delete</button>
 `:``}
-<p>${p.content.substring(0,120)}...</p>
+<p>${p.content.substring(0,100)}...</p>
 `;
 box.appendChild(div);
 });
 }
 
-function viewPage(i){
-let page=document.getElementById("pageView");
-page.innerHTML=`
-<h1>${pages[i].title}</h1>
-<p>${pages[i].content}</p>
-`;
+function view(i){
+alert(pages[i].title+"\n\n"+pages[i].content);
 }
 
-function editPage(i){
-let newContent=prompt("Edit content:",pages[i].content);
+function edit(i){
+let newContent=prompt("Edit Content:",pages[i].content);
 if(newContent!==null){
 pages[i].content=newContent;
 save();
 }
 }
 
-function deletePage(i){
-if(confirm("Delete this page?")){
+function del(i){
+if(confirm("Delete page?")){
 pages.splice(i,1);
 save();
 }
 }
 
-function search(){
-let keyword=document.getElementById("searchBox").value.toLowerCase();
-let box=document.getElementById("results");
-box.innerHTML="";
-pages.forEach((p,i)=>{
-if(p.title.toLowerCase().includes(keyword)){
-let div=document.createElement("div");
-div.className="result";
-div.innerHTML=`
-<b onclick="viewPage(${i})">${p.title}</b>
-<p>${p.content.substring(0,120)}...</p>
-`;
-box.appendChild(div);
-}
-});
-}
-
-function showAll(){
-render();
+function toggleDark(){
+document.body.style.background=
+document.body.style.background==="black"?"#f5f5f5":"black";
 }
 
 render();

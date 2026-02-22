@@ -19,6 +19,11 @@ padding:15px;
 font-size:22px;
 }
 
+nav{
+background:#111827;
+padding:10px;
+}
+
 nav button{
 margin:5px;
 padding:8px 15px;
@@ -28,20 +33,23 @@ cursor:pointer;
 }
 
 .section{
-display:none;
 padding:20px;
 }
 
 .card{
 background:#1e293b;
 padding:15px;
-margin:10px auto;
+margin:15px auto;
 border-radius:12px;
 width:90%;
 max-width:400px;
 }
 
-#home{ display:block; }
+.card img{
+width:100%;
+border-radius:10px;
+margin-bottom:10px;
+}
 
 #addBtn{
 display:none;
@@ -52,6 +60,13 @@ background:gold;
 background:#5865F2;
 color:white;
 }
+
+.prologue-box{
+background:#1e293b;
+padding:15px;
+margin:15px;
+border-radius:12px;
+}
 </style>
 </head>
 
@@ -60,24 +75,16 @@ color:white;
 <header>🏰 โรงเรียนราชวงศ์</header>
 
 <nav>
-<button onclick="showTab('home')">หน้าหลัก</button>
-<button onclick="showTab('prologue')">ปฐมบท</button>
 <button onclick="loginAdmin()">โหมดผู้สร้าง</button>
 <a href="https://discord.gg/BCJ8QnhNY" target="_blank">
 <button class="discord-btn">เข้าดิส</button>
 </a>
 </nav>
 
-<div id="home" class="section">
-<h2>รายชื่อตัวละคร</h2>
+<div class="section">
 
-<button id="addBtn" onclick="addCharacter()">เพิ่มตัวละคร</button>
-
-<div id="characterList"></div>
-</div>
-
-<div id="prologue" class="section">
-<h2>ปฐมบท</h2>
+<div class="prologue-box">
+<h2>📖 ปฐมบท</h2>
 <p>
 ณ ดินแดนแห่งราชวงศ์…  
 โรงเรียนที่รวมเหล่าผู้มีพลังพิเศษ  
@@ -86,15 +93,17 @@ color:white;
 </p>
 </div>
 
+<h2>⚔ รายชื่อตัวละคร</h2>
+
+<button id="addBtn" onclick="addCharacter()">เพิ่มตัวละคร</button>
+
+<div id="characterList"></div>
+
+</div>
+
 <script>
 let isAdmin = false;
 let adminCode = "royalking";
-
-function showTab(tab){
-document.getElementById("home").style.display = "none";
-document.getElementById("prologue").style.display = "none";
-document.getElementById(tab).style.display = "block";
-}
 
 function loginAdmin(){
 let code = prompt("ใส่รหัสแอดมิน:");
@@ -112,11 +121,16 @@ if(!isAdmin) return;
 
 let name = prompt("ชื่อตัวละคร:");
 let power = prompt("พลัง:");
+let image = prompt("ลิงก์รูปภาพ (วาง URL รูป):");
 
-if(name && power){
+if(name && power && image){
 let card = document.createElement("div");
 card.className = "card";
-card.innerHTML = "<h3>"+name+"</h3><p>พลัง: "+power+"</p>";
+card.innerHTML = `
+<img src="${image}">
+<h3>${name}</h3>
+<p>พลัง: ${power}</p>
+`;
 document.getElementById("characterList").appendChild(card);
 }
 }

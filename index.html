@@ -6,7 +6,7 @@
 
 <style>
 body{
-font-family: sans-serif;
+font-family:sans-serif;
 background:#0f172a;
 color:white;
 text-align:center;
@@ -95,7 +95,14 @@ border-radius:12px;
 
 <h2>⚔ รายชื่อตัวละคร</h2>
 
-<button id="addBtn" onclick="addCharacter()">เพิ่มตัวละคร</button>
+<button id="addBtn" onclick="showForm()">เพิ่มตัวละคร</button>
+
+<div id="formArea" style="display:none; margin:15px;">
+<input type="text" id="charName" placeholder="ชื่อตัวละคร"><br><br>
+<input type="text" id="charPower" placeholder="พลัง"><br><br>
+<input type="file" id="charImage" accept="image/*"><br><br>
+<button onclick="saveCharacter()">บันทึก</button>
+</div>
 
 <div id="characterList"></div>
 
@@ -116,23 +123,36 @@ alert("รหัสไม่ถูกต้อง");
 }
 }
 
-function addCharacter(){
+function showForm(){
 if(!isAdmin) return;
+document.getElementById("formArea").style.display = "block";
+}
 
-let name = prompt("ชื่อตัวละคร:");
-let power = prompt("พลัง:");
-let image = prompt("ลิงก์รูปภาพ (วาง URL รูป):");
+function saveCharacter(){
+let name = document.getElementById("charName").value;
+let power = document.getElementById("charPower").value;
+let file = document.getElementById("charImage").files[0];
 
-if(name && power && image){
+if(!name || !power || !file){
+alert("กรอกข้อมูลให้ครบ");
+return;
+}
+
+let reader = new FileReader();
+reader.onload = function(e){
 let card = document.createElement("div");
 card.className = "card";
 card.innerHTML = `
-<img src="${image}">
+<img src="${e.target.result}">
 <h3>${name}</h3>
 <p>พลัง: ${power}</p>
 `;
 document.getElementById("characterList").appendChild(card);
-}
+};
+
+reader.readAsDataURL(file);
+
+document.getElementById("formArea").style.display = "none";
 }
 </script>
 
